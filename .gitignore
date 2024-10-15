@@ -1,11 +1,10 @@
 
-Figures/
-old experiments/
-myenv/
+#old experiments/
+#myenv/
 Data/
 clean code/Results/
-clean code/Results/parameter_exp
 cv_experiments/redundant_code_results/
+cv_experiments/Results/
 
 
 # Byte-compiled / optimized / DLL files
