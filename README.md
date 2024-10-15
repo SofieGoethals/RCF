@@ -1,7 +1,7 @@
 # RCF
 
 # Unfair_ML
- This repository provides the code for the paper *'Resource-constrained Fairness'*.
+ This repository provides the code for the paper [*'Resource-constrained Fairness'*](https://arxiv.org/pdf/2406.01290).
  The folder cv_experiments contains the experiments for the computer vision datasets, while the folder clean_code contains the experiments for the tabular datasets.
 
 ## Citing
