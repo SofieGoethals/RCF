@@ -3,8 +3,12 @@
 #myenv/
 Data/
 clean code/Results/
+clean code/Figures.
 cv_experiments/redundant_code_results/
 cv_experiments/Results/
+cv_experiments/Celeba_results/
+cv_experiments/Fitzpatrick_newresults/
+cv_experiments/Figures/
 baseline_comparison/
 
 # Byte-compiled / optimized / DLL files
