@@ -1,33 +1,15 @@
 
-from aif360.datasets import BinaryLabelDataset
-from aif360.algorithms.preprocessing import LFR
-import aif360
-from aif360.metrics import BinaryLabelDatasetMetric
-from IPython.display import Markdown, display
-from aif360.algorithms.preprocessing.reweighing import Reweighing
-from aif360.sklearn.preprocessing import LearnedFairRepresentations as LFR_sk
-from aif360.algorithms.preprocessing import DisparateImpactRemover
-from aif360.algorithms.inprocessing import PrejudiceRemover
-from aif360.algorithms.inprocessing import AdversarialDebiasing
-from aif360.algorithms.inprocessing import MetaFairClassifier
 import numpy as np
 from sklearn.model_selection import train_test_split
 import pandas as pd
-#import tensorflow.compat.v1 as tf
-#tf.disable_eager_execution()
-from aif360.algorithms.postprocessing.reject_option_classification import RejectOptionClassification
+
+
 from aif360.algorithms.postprocessing.eq_odds_postprocessing import EqOddsPostprocessing as EQ
-#import fairlearn
-#from fairlearn.postprocessing import ThresholdOptimizer
 from statistics import mean
 from sklearn.metrics import accuracy_score, roc_auc_score
 import matplotlib.pyplot as plt
-#from functions_general import *
 from tqdm import tqdm
 import xgboost as xgb
-
-#%% Assign and allocate functions
-
 
 
 #%% run all 
@@ -150,13 +132,6 @@ def run_constraints_xgb(X,y, sens_var, sensitive_value):
     print('The AUC of the biased model for the privileged group (validation set) is:', roc_auc_score(val_results[val_results.protected==False].target,val_results[val_results.protected==False].biased_scores))
     print('The AUC of the biased model for the protected group (test set) is:', roc_auc_score(test_results[test_results.protected==True].target,test_results[test_results.protected==True].biased_scores))
     print('The AUC of the biased model for the privileged group (test set) is:', roc_auc_score(test_results[test_results.protected==False].target,test_results[test_results.protected==False].biased_scores))
-    # print('Postprocess:')
-    # for metric in metrics:
-    #     test_results['to_' + metric]=fairlearn_to(X_train, X_test, y_train, sens_var,  biased_model, metric)
-    # #repeat for validation set
-    # print('Postprocess:')
-    # for metric in metrics:
-    #     val_results['to_' + metric]=fairlearn_to(X_train, X_val, y_train, sens_var,  biased_model, metric)
     return test_results, val_results
 
 #%% utils 
@@ -202,8 +177,6 @@ def assign_label(C,p,results):
     if N_pro>sum(results.protected==True) and N_pri>sum(results.protected==False):
         print('Error: capacity is higher than the number of instances in the dataset')
         return
-    #print(N_pro)
-    #print(N_pri)
     scores_pri=results[results.protected==False].biased_scores
     score_index_pairs_pri= [(score, index) for index, score in scores_pri.items()]
     # Sort the list of tuples in descending order of scores
@@ -215,7 +188,6 @@ def assign_label(C,p,results):
     sorted_pairs_pro = sorted(score_index_pairs_pro, key=lambda x: x[0], reverse=True)
     indices_pro = [t[1] for t in sorted_pairs_pro[0:N_pro]]
     preds= pd.Series([1 if i in indices_pro or i in indices_pri else 0 for i in results.index], index=results.index)
-    #preds = [1 if i in indices_pro or i in indices_pri else 0 for i in results.index]
     return preds
 
 def calculate_threshold_dp(C, results):
@@ -234,8 +206,6 @@ def calculate_threshold_dp(C, results):
     sorted_pairs_pro = sorted(score_index_pairs_pro, key=lambda x: x[0], reverse=True)
     indices_pro = [t[1] for t in sorted_pairs_pro[0:N_pro]]
     preds_final = pd.Series([1 if i in indices_pro or i in indices_pri else 0 for i in results.index], index=results.index)
-    #preds_pri = [1 if i in indices_pri else 0 for i in results[results.protected==False].index]
-    #preds_pro = [1 if i in indices_pro else 0 for i in results[results.protected==True].index]
     preds_pri = preds_final[results.protected==False]
     preds_pro = preds_final[results.protected==True]
     if sum(preds_pri)==0:
@@ -260,5 +230,4 @@ def find_closest_index(list1, list2):
         if diff < min_diff:
             min_diff = diff
             closest_index = i
-    #print('The minumum difference is {}'.format(min_diff))
     return closest_index
